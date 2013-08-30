@@ -30,4 +30,4 @@ while men:
     else:
         men.append(man)
 
-#Print results during or after algorithm?
+#Print results during or after algorithm?..
