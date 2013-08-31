@@ -4,10 +4,10 @@ from collections import deque
 #Data structures
 men = [1,3,5]
 women = [2,4,6]
-isNotWedlocked = {x: True for x in women}
+current = {x: None for x in women}
 menPreferenceList = {1: deque([6,4,2]), 3: deque([2,6,4]), 5: deque([6,4,2])}
-#womenPreferenceList = {2: [3,5,1], 4: [5,1,3], 6: [1,5,3]}
-
+ranking = {2: {3:0,5:1,1:2}, 4: {5:0,1:1,3:2}, 6: {1:0,5:1,3:2}}
+    
 #Open the file and load contents into memory
 with open(sys.argv[1], 'r') as f:
     for line in f:
@@ -22,12 +22,14 @@ with open(sys.argv[1], 'r') as f:
 while men:
     man = men.pop()
     woman = menPreferenceList[man].popleft()
-    if isNotWedlocked[woman]:
-        pass
-#         assign m and w to be engaged
-#     elif (w prefers m to her fiance m')
-#         assign m and w to be engaged, and m' to be free
+    if current[woman] == None:
+        current[woman] = man
+    elif ranking[woman][man] < ranking[woman][current[woman]]:
+        discardedMan = current[woman]
+        men.append(discardedMan)
+        current[woman] = man
     else:
         men.append(man)
 
 #Print results during or after algorithm?..
+print(current)
