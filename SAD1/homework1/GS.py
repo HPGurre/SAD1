@@ -1,24 +1,42 @@
 import sys
 from collections import deque
+import re
 
 #Data structures
-men = [1,3,5]
-women = [2,4,6]
-current = {x: None for x in women}
-menPreferenceList = {1: deque([6,4,2]), 3: deque([2,6,4]), 5: deque([6,4,2])}
-ranking = {2: {3:0,5:1,1:2}, 4: {5:0,1:1,3:2}, 6: {1:0,5:1,3:2}}
+men = []
+women = []
+menPreferenceList = {'Ross': deque(['Rachel','Phoebe','Monica']), 'Chandler': deque(['Monica','Rachel','Phoebe']), 'Joey': deque(['Rachel','Phoebe','Monica'])}
+ranking = {'Monica': {'Chandler':0,'Joey':1,'Ross':2}, 'Phoebe': {'Joey':0,'Ross':1,'Chandler':2}, 'Rachel': {'Ross':0,'Joey':1,'Chandler':2}}
     
+#REGEX for matching the lines in the file
+manPattern = re.compile("\s*\d*[13579][ ]")
+womanPattern = re.compile("\s*\d*[02468][ ]")
+manPrefPattern = re.compile("\s*\d*[13579][:]")
+womanPrefPattern = re.compile("\s*\d*[02468][:]")
+
 #Open the file and load contents into memory
 with open(sys.argv[1], 'r') as f:
     for line in f:
-        if line.startswith('#'):
-            pass
-        elif line.startswith('n'):
-            n = line[2]
-#         elif 1+1:
-#             print(line, end='')
+#         elif line.startswith('n'):
+#             n = line[2]
+#             continue
+        if manPattern.match(line):
+            men.append(line.split()[1])
+            continue
+        elif womanPattern.match(line):
+            women.append(line.split()[1])
+            continue
+        elif manPrefPattern.match(line):
+            print("FIXME: MAN PREFERENCES MATCH")
+            continue
+        elif womanPrefPattern.match(line):
+            print("FIXME: WOMAN PREFERENCES MATCH")
+            continue
+
 
 #Gale-Shapley Algorithm
+current = {x: None for x in women}
+
 while men:
     man = men.pop()
     woman = menPreferenceList[man].popleft()
@@ -32,4 +50,5 @@ while men:
         men.append(man)
 
 #Print results during or after algorithm?..
+print('Result:')
 print(current)
