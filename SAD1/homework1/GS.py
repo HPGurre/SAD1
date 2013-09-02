@@ -9,10 +9,10 @@ menPreferenceList = {'Ross': deque(['Rachel','Phoebe','Monica']), 'Chandler': de
 ranking = {'Monica': {'Chandler':0,'Joey':1,'Ross':2}, 'Phoebe': {'Joey':0,'Ross':1,'Chandler':2}, 'Rachel': {'Ross':0,'Joey':1,'Chandler':2}}
     
 #REGEX for matching the lines in the file
-manPattern = re.compile("\s*\d*[13579][ ]")
-womanPattern = re.compile("\s*\d*[02468][ ]")
-manPrefPattern = re.compile("\s*\d*[13579][:]")
-womanPrefPattern = re.compile("\s*\d*[02468][:]")
+manPattern = re.compile("^\d*[13579][ ]")
+womanPattern = re.compile("^\d*[02468][ ]")
+manPrefPattern = re.compile("^\d*[13579][:]")
+womanPrefPattern = re.compile("^\d*[02468][:]")
 
 #Open the file and load contents into memory
 with open(sys.argv[1], 'r') as f:
