@@ -5,8 +5,9 @@ import re
 #Data structures
 men = []
 women = []
-menPreferenceList = {'Ross': deque(['Rachel','Phoebe','Monica']), 'Chandler': deque(['Monica','Rachel','Phoebe']), 'Joey': deque(['Rachel','Phoebe','Monica'])}
-ranking = {'Monica': {'Chandler':0,'Joey':1,'Ross':2}, 'Phoebe': {'Joey':0,'Ross':1,'Chandler':2}, 'Rachel': {'Ross':0,'Joey':1,'Chandler':2}}
+#menPreferenceList = {'Ross': deque(['Rachel','Phoebe','Monica']), 'Chandler': deque(['Monica','Rachel','Phoebe']), 'Joey': deque(['Rachel','Phoebe','Monica'])}
+menPreferenceList = {}
+ranking = {'2': {'3':0,'5':1,'1':2}, '4': {'5':0,'1':1,'3':2}, '6': {'1':0,'5':1,'3':2}}
     
 #REGEX for matching the lines in the file
 manPattern = re.compile("^\d*[13579][ ]")
@@ -21,19 +22,18 @@ with open(sys.argv[1], 'r') as f:
 #             n = line[2]
 #             continue
         if manPattern.match(line):
-            men.append(line.split()[1])
+            men.append(line.split()[0])
             continue
         elif womanPattern.match(line):
-            women.append(line.split()[1])
+            women.append(line.split()[0])
             continue
         elif manPrefPattern.match(line):
-            print("FIXME: MAN PREFERENCES MATCH")
+            menPreferenceList[line[0]] = deque(line.split()[1:])
             continue
         elif womanPrefPattern.match(line):
             print("FIXME: WOMAN PREFERENCES MATCH")
             continue
-
-
+        
 #Gale-Shapley Algorithm
 current = {x: None for x in women}
 
