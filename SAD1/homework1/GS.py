@@ -4,17 +4,15 @@ import re
 import timeit
 import pprint
 
-
 #Data structures
 men = []
 women = []
 menPreferenceList = {}
 womenRanking = {}
-menNames = {}
-womenNames = {}
+menNames = {} # used for printing
+womenNames = {} # used for printing
 
-
-#Start calculating the time spend in execution algorithm
+#Start calculating the time spent in execution algorithm
 start = timeit.default_timer() 
     
 #REGEX for matching the lines in the file
@@ -56,23 +54,26 @@ current = {x: None for x in women}
 while men:
     man = men.pop()
     woman = menPreferenceList[man].popleft()
+    
+    
     if current[woman] == None:
         current[woman] = man
+        
     elif womenRanking[woman][man] < womenRanking[woman][current[woman]]:
         discardedMan = current[woman]
         men.append(discardedMan)
         current[woman] = man
+        
     else:
         men.append(man)
 
-#Calculating the run time for the algorithm       
+#Calculate the running time      
 stop = timeit.default_timer()
 duration = stop-start
 
-#Print results during or after algorithm?..
+#Print results
 print('Result:')
-pretty_ds = pprint.pformat(current, width=20)
-print(pretty_ds)
+print(pprint.pformat(current, width=20))
 
 print("Runtime")
 print (duration)
