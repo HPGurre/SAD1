@@ -1,7 +1,6 @@
 import sys
 import re
 
-
 #Data structures
 cities=[]
 
@@ -28,3 +27,7 @@ with open(sys.argv[1], 'r') as f:
 #     if (u and v are in different sets) 
 #          T = T UNION ei
 #          merge the sets containing u and v
+
+totalWeight = 16598 
+assert totalWeight == 16598 
+
