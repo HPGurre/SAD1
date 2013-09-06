@@ -49,8 +49,10 @@ cityDistancePattern = re.compile('^.*[[]\d*[]]')
 #Open the file and load contents into memory
 with open(sys.argv[1], 'r') as f:
     for line in f:  
+        
         if cityPattern.match(line):
             vertices.append(Vertex(line))
+            
         elif cityDistancePattern.match(line):
             # TODO: Optimize the extraction of the edges. It feels like too much work is being done.
             fromVertex = line.split('--')[0];
