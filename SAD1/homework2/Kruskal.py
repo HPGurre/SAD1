@@ -15,16 +15,18 @@ class Record:
     def __init__(self, vertex, pointer): 
         self.vertex = vertex
         self.pointer = pointer
-        # FIXME: Implement this( see page 154)
+        # FIXME: Implement this(see page 154)
         
 class UnionFind:
+    components = []
     def __init__(self):
         pass
     def makeUnionFind(self, vertices):
-        """Creates the Union-find data structure with n sets, where n is the no. of vertices
+        """Creates the Union-find data structure with n singleton sets, where n is the no. of vertices
         """
-        pass
-        # FIXME: Implement this (see page 154)   
+        for vertex in vertices:
+            self.components.append({Record(vertex, None)})
+        # FIXME: Implement this( see page 154) 
     def find(self, vertex):
         """Returns the name of the set that this vertex currently belongs to
         """
@@ -60,13 +62,14 @@ with open(sys.argv[1], 'r') as f:
 def Kruskal(vertices, edges):
     #Sort edges weights so that c1 <= c2 =< ... <=cm
     edges.sort(key=lambda edge: edge.weight)
-    # TODO: Look p running time of this. It need to be at least n LogN. 
+    # TODO: Look up running time of this. It need to be at least n LogN. 
 
     # T is initially empty, where T is the subset of edges.
-    T = []
+    T = set()
 
     #for (u belonging V) make a set containing singleton u
-    unionFind = UnionFind.makeUnionFind(UnionFind, vertices)
+    unionFind = UnionFind()
+    unionFind.makeUnionFind(vertices)
     
     #  for i = 1 to m
     for edge in edges: 
@@ -74,7 +77,7 @@ def Kruskal(vertices, edges):
           
         if (edge.fromVertex != edge.toVertex):
             #T = T UNION ei
-            T.append(edge)
+            T.add(edge)
             
             #merge the sets containing u and v
             # unionFind.union(set1, set2)
@@ -82,6 +85,7 @@ def Kruskal(vertices, edges):
     return sum(x.weight for x in T)
 
 totalWeight = Kruskal(vertices, edges)
+print("Totalweight is: "+ str(totalWeight))
 #totalWeight = 16598 
 
 #assert totalWeight == 16394, "Your error is probably in the parsing stage, not in the algorithm." 
