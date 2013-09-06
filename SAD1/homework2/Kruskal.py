@@ -13,7 +13,7 @@ class Edge:
         
 class UnionFind:
     components = []
-    parent = {}
+    parents = {}
     size = {}
     def __init__(self):
         pass
@@ -23,24 +23,25 @@ class UnionFind:
         """
         for vertex in vertices:
             self.components.append({vertex})
-            self.parent[vertex] = vertex
+            self.parents[vertex] = vertex
             self.size[vertex] = 1
 
     def find(self, vertex):
         """Returns the name of the set that this vertex currently belongs to
         """
-        while vertex != self.parent[vertex]: 
-            vertex = self.parent[vertex]
+        #FIXME This is bugged. vertex name is changed when this is not desired.
+        while vertex != self.parents[vertex]: 
+            vertex = self.parents[vertex]
         return vertex
 
     def union(self, vertex, anotherVertex):
         """Weighted Quick-union 
         """
         if self.size[vertex] < self.size[anotherVertex]:
-            self.parent[vertex] = anotherVertex
+            self.parents[vertex] = anotherVertex
             self.size[anotherVertex] += self.size[vertex]
         else:
-            self.parent[anotherVertex] = vertex
+            self.parents[anotherVertex] = vertex
             self.size[vertex] += self.size[anotherVertex]
     
     def connected(self, vertex, anotherVertex):
@@ -69,35 +70,21 @@ with open(sys.argv[1], 'r') as f:
             toVertex =  line.split('--')[1].split('[')[0].strip(' "')
             weight = int(line.split('--')[1].split("[")[1][0:-2])
             edges.append(Edge(fromVertex, toVertex, weight))
- 
-for edge in edges:
-    print(edge.fromVertex)
-    print(edge.toVertex)
-    print(edge.weight)
-print(vertices)            
-
+        
 def Kruskal(vertices, edges):
-    #Sort edges weights so that c1 <= c2 =< ... <=cm
     edges.sort(key=lambda edge: edge.weight)
-    # TODO: Look up running time of this. It need to be at least n LogN. 
+    # TODO: Look up running time of this. It need to be at least n LogN. Alternative use a PQ.
 
-    # T is initially empty, where T is the subset of edges.
     T = set()
 
-    #for (u belonging V) make a set containing singleton u
     unionFind = UnionFind()
     unionFind.makeUnionFind(vertices)
     
-    #  for i = 1 to m
     for edge in edges: 
-        # (u, v) = ei
-          
-        if (not unionFind.connected(edge.toVertex, edge.fromVertex)):
-            #T = T UNION ei
+
+        if (not unionFind.connected(edge.fromVertex, edge.toVertex)):
             T.add(edge)
-            
-            #merge the sets containing u and v
-            unionFind.union(edge.toVertex, edge.fromVertex)
+            unionFind.union(edge.fromVertex, edge.toVertex)
 
     return sum(edge.weight for edge in T)
 
