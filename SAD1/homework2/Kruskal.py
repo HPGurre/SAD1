@@ -75,14 +75,14 @@ def Kruskal(vertices, edges):
     for edge in edges: 
         # (u, v) = ei
           
-        if (edge.fromVertex != edge.toVertex):
+        if (unionFind.find(edge.fromVertex) != unionFind.find(edge.toVertex)):
             #T = T UNION ei
             T.add(edge)
             
             #merge the sets containing u and v
             # unionFind.union(set1, set2)
 
-    return sum(x.weight for x in T)
+    return sum(edge.weight for edge in T)
 
 totalWeight = Kruskal(vertices, edges)
 print("Totalweight is: "+ str(totalWeight))
