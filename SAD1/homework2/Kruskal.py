@@ -12,7 +12,6 @@ class Edge:
         self.weight = weight    
         
 class UnionFind:
-    components = []
     parents = {}
     size = {}
     def __init__(self):
@@ -22,17 +21,15 @@ class UnionFind:
         where n is the number of vertices
         """
         for vertex in vertices:
-            self.components.append({vertex})
             self.parents[vertex] = vertex
             self.size[vertex] = 1
-
+        
     def find(self, vertex):
         """Returns the name of the set that this vertex currently belongs to
         """
-        #FIXME This is bugged. vertex name is changed when this is not desired.
-        while vertex != self.parents[vertex]: 
-            vertex = self.parents[vertex]
-        return vertex
+        if vertex == self.parents[vertex]: 
+            return vertex
+        return self.find(self.parents[vertex])
 
     def union(self, vertex, anotherVertex):
         """Weighted Quick-union 
@@ -81,7 +78,7 @@ def Kruskal(vertices, edges):
     unionFind.makeUnionFind(vertices)
     
     for edge in edges: 
-
+        
         if (not unionFind.connected(edge.fromVertex, edge.toVertex)):
             T.add(edge)
             unionFind.union(edge.fromVertex, edge.toVertex)
