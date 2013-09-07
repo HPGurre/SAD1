@@ -1,10 +1,6 @@
 import sys
 import re
-
-# class Vertex:
-#     def __init__(self, name):
-#         self.name = name
-        
+  
 class Edge:
     def __init__(self, fromVertex, toVertex, weight): 
         self.fromVertex = fromVertex
@@ -12,10 +8,8 @@ class Edge:
         self.weight = weight    
         
 class UnionFind:
-    parents = {}
-    size = {}
-    def __init__(self):
-        pass
+    parents = {}    #Holds the parent of a vertex
+    size = {}       #Holds the sizes of the components/sets
     def makeUnionFind(self, vertices):
         """Creates the Union-find data structure with n singleton sets, 
         where n is the number of vertices
@@ -46,16 +40,14 @@ class UnionFind:
         """
         return self.find(vertex) == self.find(anotherVertex)
     
-#Data structures
-vertices=[]
-edges=[]
-
 #REGEX for matching the lines in the file
 cityPattern = re.compile('^["]?\D*["]?$')
 cityDistancePattern = re.compile('^.*[[]\d*[]]')
 
 #Open the file and load contents into memory
 with open(sys.argv[1], 'r') as f:
+    vertices=[]
+    edges=[]
     for line in f:  
         
         if cityPattern.match(line):
@@ -70,24 +62,20 @@ with open(sys.argv[1], 'r') as f:
         
 def Kruskal(vertices, edges):
     edges.sort(key=lambda edge: edge.weight)
-    # TODO: Look up running time of this. It need to be at least n LogN. Alternative use a PQ.
+    # TODO: Look up running time of this. It need to be at least n*LogN. Alternative use a PQ.
 
     T = set()
-
     unionFind = UnionFind()
     unionFind.makeUnionFind(vertices)
     
     for edge in edges: 
-        
         if (not unionFind.connected(edge.fromVertex, edge.toVertex)):
             T.add(edge)
             unionFind.union(edge.fromVertex, edge.toVertex)
-
+        
     return sum(edge.weight for edge in T)
 
-totalWeight = Kruskal(vertices, edges)
-print("Totalweight is: "+ str(totalWeight))
-#totalWeight = 16598 
+print("Total weight is: "+ str(Kruskal(vertices, edges)))
 
 #assert totalWeight == 16394, "Your error is probably in the parsing stage, not in the algorithm." 
 #assert totalWeight != 16598, "Your answer is wrong - no suggestions are available." 
