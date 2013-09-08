@@ -29,10 +29,10 @@ class UnionFind:
         """Weighted Quick-union 
         """
         if self.size[vertex] < self.size[anotherVertex]:
-            self.parents[vertex] = anotherVertex
+            self.parents[self.find(vertex)] = self.find(anotherVertex)
             self.size[anotherVertex] += self.size[vertex]
         else:
-            self.parents[anotherVertex] = vertex
+            self.parents[self.find(anotherVertex)] = self.find(vertex)
             self.size[vertex] += self.size[anotherVertex]
     
     def connected(self, vertex, anotherVertex):
@@ -76,9 +76,7 @@ def Kruskal(vertices, edges):
     return sum(edge.weight for edge in T)
 
 print("Total weight is: "+ str(Kruskal(vertices, edges)))
-
-#assert totalWeight == 16394, "Your error is probably in the parsing stage, not in the algorithm." 
-#assert totalWeight != 16598, "Your answer is wrong - no suggestions are available." 
+#assert totalWeight != 16598, "Your answer is wrong (if the result is 16394 your error is probably in the parsing stage, not in the algorithm.)" 
 
 
 
