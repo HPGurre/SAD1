@@ -1,5 +1,6 @@
 import sys
 import re
+import timeit
   
 class Edge:
     def __init__(self, fromVertex, toVertex, weight): 
@@ -40,29 +41,8 @@ class UnionFind:
         """
         return self.find(vertex) == self.find(anotherVertex)
     
-#REGEX for matching the lines in the file
-cityPattern = re.compile('^["]?\D*["]?$')
-cityDistancePattern = re.compile('^.*[[]\d*[]]')
-
-#Open the file and load contents into memory
-with open(sys.argv[1], 'r') as f:
-    vertices=[]
-    edges=[]
-    for line in f:  
-        
-        if cityPattern.match(line):
-            vertices.append(line.rstrip('\n').strip(' " '))
-            
-        elif cityDistancePattern.match(line):
-            # TODO: Optimize the extraction of the edges. It feels like too much work is being done.
-            fromVertex = line.split('--')[0].strip(' "')
-            toVertex =  line.split('--')[1].split('[')[0].strip(' "')
-            weight = int(line.split('--')[1].split("[")[1][0:-2])
-            edges.append(Edge(fromVertex, toVertex, weight))
-        
 def Kruskal(vertices, edges):
-    edges.sort(key=lambda edge: edge.weight)
-    # TODO: Look up running time of this. It need to be at least n*LogN. Alternative use a PQ.
+    edges.sort(key=lambda edge: edge.weight) #nLogN
 
     T = set()
     unionFind = UnionFind()
@@ -74,10 +54,41 @@ def Kruskal(vertices, edges):
             unionFind.union(edge.fromVertex, edge.toVertex)
         
     return sum(edge.weight for edge in T)
+    
+#REGEX for matching the lines in the file
+cityPattern = re.compile('^["]?\D*["]?$')
+cityDistancePattern = re.compile('^.*[[]\d*[]]')
 
-print("Total weight is: "+ str(Kruskal(vertices, edges)))
-#assert totalWeight != 16598, "Your answer is wrong (if the result is 16394 your error is probably in the parsing stage, not in the algorithm.)" 
+#Start calculating the time spend in execution algorithm
+start = timeit.default_timer()      
+
+vertices=[]
+edges=[]
+
+#Open the file and load contents into memory
+with open(sys.argv[1], 'r') as f:
+    for line in f:  
+        
+        if cityPattern.match(line):
+            vertices.append(line.rstrip('\n').strip(' " '))
+            
+        elif cityDistancePattern.match(line):
+            # TODO: Optimize the extraction of the edges. It feels like too much work is being done.
+            fromVertex = line.split('--')[0].strip(' "')
+            toVertex =  line.split('--')[1].split('[')[0].strip(' "')
+            weight = int(line.split('--')[1].split("[")[1][0:-2])
+            edges.append(Edge(fromVertex, toVertex, weight))
+
+#Calculating the run time for the algorithm
+stop = timeit.default_timer()
+total = stop-start
+print("Runtime(File): " + str(total))
+
+#Start calculating the time spend in execution algorithm
+start = timeit.default_timer()   
+res = Kruskal(vertices, edges)
+stop = timeit.default_timer()
+print("Runtime(Kruskal): " + str(stop-start))
 
 
-
-
+print("Total weight is: "+ str(res))
