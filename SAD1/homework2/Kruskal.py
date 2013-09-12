@@ -42,7 +42,7 @@ class UnionFind:
         return self.find(vertex) == self.find(anotherVertex)
     
 def Kruskal(vertices, edges):
-    edges.sort(key=lambda edge: edge.weight) #nLogN
+    edges.sort(key=lambda edge: edge.weight) #eLoge
 
     T = set()
     unionFind = UnionFind()
@@ -73,7 +73,6 @@ with open(sys.argv[1], 'r') as f:
             vertices.append(line.rstrip('\n').strip(' " '))
             
         elif cityDistancePattern.match(line):
-            # TODO: Optimize the extraction of the edges. It feels like too much work is being done.
             fromVertex = line.split('--')[0].strip(' "')
             toVertex =  line.split('--')[1].split('[')[0].strip(' "')
             weight = int(line.split('--')[1].split("[")[1][0:-2])
