@@ -15,17 +15,17 @@ def EuclidianDistance(p1, p2):
 def ClosestPair(points):
     px = points[:]
     py = points[:]
-    px = points.sort(key=lambda point: point.x)
-    py = points.sort(key=lambda point: point.y)
+    points.sort(key=lambda point: point.x)
+    points.sort(key=lambda point: point.y)
     
     ClosestPairRec(px, py)
     
 def ClosestPairRec(pointsX, pointsY):
-    if len(pointsX) :
+    if len(pointsX) >= 3:
         [print(EuclidianDistance(p1, p2)) for p1 in pointsX for p2 in pointsX]
 
-    ClosestPairRec(points[:len(points)/2])
-    ClosestPairRec(points[len(points)/2+1:]);
+   # ClosestPairRec(points[:int(len(points)/2)])
+    #ClosestPairRec(points[int(len(points)/2+1):]);
     
 #REGEX for matching the lines in the file
 pointPattern = re.compile('[\s]?[+-]?')  
