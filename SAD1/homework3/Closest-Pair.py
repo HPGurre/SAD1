@@ -1,18 +1,18 @@
 import sys
 import re
 import math
+import itertools
 
-class Point():
-    
+class Point():   
     def __init__ (self, name, x, y):
         self.name = name
         self.x = x
         self.y = y
 
-def EuclidianDistance(p1, p2):
+def euclidianDistance(p1, p2):
         return math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
 
-def ClosestPair(points):
+def closestPair(points):
     px = points[:]
     py = points[:]
     points.sort(key=lambda point: point.x)
@@ -20,24 +20,39 @@ def ClosestPair(points):
     
     ClosestPairRec(px, py)
     
-def ClosestPairRec(pointsX, pointsY):
-    if len(pointsX) >= 3:
-        [print(EuclidianDistance(p1, p2)) for p1 in pointsX for p2 in pointsX]
-
+def ClosestPairRec(pointsX, pointsY):    
+    #base case
+    if len(pointsX) <= 3:
+        min_pair = (pointsX[0], pointsX[1] )
+        min_distance = 1000
+        for p1, p2 in itertools.combinations(pointsX, 2):
+            distance = euclidianDistance(p1, p2)
+            if distance < min_distance:
+                min_pair = (p1,p2)
+                min_distance = distance
+    
+    
    # ClosestPairRec(points[:int(len(points)/2)])
     #ClosestPairRec(points[int(len(points)/2+1):]);
     
 #REGEX for matching the lines in the file
-pointPattern = re.compile('[\s]?[+-]?')  
+number = "[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
+pointPattern = re.compile( '[\s]?(\d+)\s+({0})\s+({0})'.format(number))
 
 points = []    
 #Open the file and load contents into memory
 with open(sys.argv[1], 'r') as f:
-    for line in f: 
-            theLine = line.split();
-            name = str(theLine[0])
-            x = int(theLine[1])
-            y = int(theLine[2])
-            points.append(Point(name, x, y))
+    for line in f:
+        tokens = line.split() 
+        name = tokens[0]
+        x =  float(tokens[1])
+        y = float(tokens[2])
+        points.append(Point(name, x, y))
+        
+#         if pointPattern.match(line):
+#             name = str(pointPattern.match(line).group(0))
+#             x =  float(pointPattern.match(line).group(1))
+#             y = float(pointPattern.match(line).group(2))
+#             points.append(Point(name, x, y))
                     
-ClosestPair(points)
+closestPair(points)
