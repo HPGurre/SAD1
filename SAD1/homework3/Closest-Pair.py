@@ -2,9 +2,9 @@ import sys
 import re
 import math
 import itertools
-from operator import attrgetter
 from decimal import *
 import glob
+import timeit
 
 class Point():   
     def __init__ (self, name, x, y):
@@ -52,12 +52,11 @@ def closestPairRec(PX, PY):
     
     #Work
     q_r_minimum = qStar if distance(qStar[0], qStar[1]) < distance(rStar[0], rStar[1]) else rStar   
-    xStar = max(QX, key=attrgetter("x"))
-#     L = I do not think this pseudo line is needed
-    S = [point for point in PX if abs(point.x-xStar.x) < distance(q_r_minimum[0], q_r_minimum[1])]
-    
-    S.sort(key=lambda point: point.y)
+    xStar = QX[-1]
+    S = [point for point in PX if abs(point.x-xStar.x) <= distance(q_r_minimum[0], q_r_minimum[1])]
      
+    S.sort(key=lambda point: point.y)
+      
     s_minimum = None
     s_minimum_distance = Decimal('Infinity')
     for index, p1 in enumerate(S):
@@ -66,7 +65,7 @@ def closestPairRec(PX, PY):
             if d < s_minimum_distance:
                 s_minimum = (p1,p2)
                 s_minimum_distance = d
-        
+         
     if s_minimum_distance < distance(q_r_minimum[0], q_r_minimum[1]):
         return s_minimum
     else:
@@ -76,7 +75,8 @@ def closestPairRec(PX, PY):
 number = "[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
 pointPattern = re.compile( '[\s]*(\w+)\s+({0})\s+({0})'.format(number))
 
-for file in glob.iglob('data/*.tsp'):
+start = timeit.default_timer()     
+for file in glob.iglob('single/*.tsp'):
     #Open the file and load contents into memory
     with open(file, 'r') as f:
         points = []
@@ -93,4 +93,8 @@ for file in glob.iglob('data/*.tsp'):
     theClosestPair = closestPair(points)
     dist = str(distance(theClosestPair[0], theClosestPair[1]))
     print('{0}: {1} {2}'.format(file, n, dist))
+    
+stop = timeit.default_timer()
+total = stop-start
+print("Runtime(total): " + str(total))
 
