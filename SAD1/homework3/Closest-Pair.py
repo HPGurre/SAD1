@@ -21,8 +21,8 @@ def distance(p1, p2):
 def closestPair(points):
     px = points[:]
     py = points[:]
-    points.sort(key=lambda point: point.x)
-    points.sort(key=lambda point: point.y)
+    px.sort(key=lambda point: point.x)
+    py.sort(key=lambda point: point.y)
     
     return closestPairRec(px, py)
     
@@ -53,14 +53,14 @@ def closestPairRec(PX, PY):
     #Work
     q_r_minimum = qStar if distance(qStar[0], qStar[1]) < distance(rStar[0], rStar[1]) else rStar   
     xStar = QX[-1]
-    S = [point for point in PX if abs(point.x-xStar.x) <= distance(q_r_minimum[0], q_r_minimum[1])]
+    S = [point for point in PX if abs(point.x-xStar.x) < distance(q_r_minimum[0], q_r_minimum[1])]
      
     S.sort(key=lambda point: point.y)
       
     s_minimum = None
     s_minimum_distance = Decimal('Infinity')
     for index, p1 in enumerate(S):
-        for p2 in S[index+1:index+16]:
+        for p2 in S[index+1:index+8]: #Slides say 7, book says 15.
             d = distance(p1, p2)
             if d < s_minimum_distance:
                 s_minimum = (p1,p2)
@@ -76,7 +76,7 @@ number = "[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
 pointPattern = re.compile( '[\s]*(\w+)\s+({0})\s+({0})'.format(number))
 
 start = timeit.default_timer()     
-for file in glob.iglob('single/*.tsp'):
+for file in glob.iglob('data/*.tsp'):
     #Open the file and load contents into memory
     with open(file, 'r') as f:
         points = []
