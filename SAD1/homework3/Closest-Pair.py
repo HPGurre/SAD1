@@ -2,7 +2,6 @@ import sys
 import re
 import math
 import itertools
-from decimal import *
 import glob
 import timeit
 
