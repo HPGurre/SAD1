@@ -16,21 +16,21 @@ class Point():
         return "Point(%s: [x=%s, y=%s])"%(self.name, self.x, self.y) 
     
 def distance(p1, p2):
-        return Decimal(math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2))
+    return math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
 
 def closestPair(points):
     px = points[:]
-    py = points[:]
+ #   py = points[:]
     px.sort(key=lambda point: point.x)
-    py.sort(key=lambda point: point.y)
+    #py.sort(key=lambda point: point.y)
     
-    return closestPairRec(px, py)
+    return closestPairRec(px)
     
-def closestPairRec(PX, PY):    
+def closestPairRec(PX):    
     #Base case
     if len(PX) <= 3:
         min_pair = None
-        min_distance = Decimal('Infinity')
+        min_distance = float('inf')
         for p1, p2 in itertools.combinations(PX, 2):
             d = distance(p1, p2)
             if d < min_distance:
@@ -40,15 +40,15 @@ def closestPairRec(PX, PY):
     
     #Recursion
     QX = PX[:len(PX)//2]
-    QY = PX[:len(PX)//2]
+   # QY = PX[:len(PX)//2]
     RX = PX[len(PX)//2:]
-    RY = PX[len(PX)//2:]
+   # RY = PX[len(PX)//2:]
     
-    QY.sort(key=lambda point: point.y)
-    RY.sort(key=lambda point: point.y)
+#     QY.sort(key=lambda point: point.y)
+#     RY.sort(key=lambda point: point.y)
     
-    qStar = closestPairRec(QX, QY)
-    rStar = closestPairRec(RX, RY)
+    qStar = closestPairRec(QX)
+    rStar = closestPairRec(RX)
     
     #Work
     q_r_minimum = qStar if distance(qStar[0], qStar[1]) < distance(rStar[0], rStar[1]) else rStar   
@@ -58,7 +58,7 @@ def closestPairRec(PX, PY):
     S.sort(key=lambda point: point.y)
       
     s_minimum = None
-    s_minimum_distance = Decimal('Infinity')
+    s_minimum_distance = float('Infinity')
     for index, p1 in enumerate(S):
         for p2 in S[index+1:index+8]: #Slides say 7, book says 15.
             d = distance(p1, p2)
@@ -85,8 +85,8 @@ for file in glob.iglob('data/*.tsp'):
             if pointPattern.match(line):
                 tokens = line.split() 
                 name = tokens[0]
-                x =  Decimal(tokens[1])
-                y = Decimal(tokens[2])
+                x =  float(tokens[1])
+                y = float(tokens[2])
                 points.append(Point(name, x, y))
                 n+=1
     
