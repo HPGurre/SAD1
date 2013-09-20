@@ -25,16 +25,10 @@ with open(theFile, 'r') as f:
     for line in f:
         Entities.append(Entity(line[1:-2], f.__next__()[:-1]))      
 
-for e in Entities:
-    print(e)
-
 for e1, e2 in itertools.combinations(Entities, 2):
     print('{0}---{1}'.format(e1.name, e2.name))
     Alignment(e1.sequence, e2.sequence)
-        
 
-theClosestPair = Alignment(1, 2)
-    
 stop = timeit.default_timer()
 total = stop-start
 print("Runtime(total): " + str(total))
