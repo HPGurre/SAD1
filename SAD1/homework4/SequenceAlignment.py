@@ -1,5 +1,3 @@
-# import sys
-# import math
 import re
 import itertools
 import timeit
@@ -14,9 +12,6 @@ class Entity:
 
 def Alignment(X, Y):
         delta = -4; # take this from the file.
-        alpha = 2;
-        m = len(Y)
-        n = len(X)
         
         #initialise
         A = [[None for y in range(len(Y))] for x in range(len(X))] #A[row(x)][column(y)]
@@ -26,25 +21,28 @@ def Alignment(X, Y):
         
         for j in range(len(Y)):
             A[0][j] = j*delta
-            
-        #Recurrence
-        for j in range(n):
-            for i in range(m):
-                #opt = min((alphaxiyj+opt(i-1, j-1), delta + opt(i-1, j), delta+opt(i,j-1)) )
-                #print(opt)
-                pass
-
-        return '[TODO]';
-
-#REGEX for matching the lines in the file
-number = "[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
+        
+        return AlignmentRec(X,Y,A)      
+    
+def AlignmentRec(X, Y, A):
+    #base
+    if not X:
+        return len(Y)*-4
+#         return A[0][len(Y)-1] FIXME
+    if not Y:
+        return len(X)*-4
+        #return A[len(X)-1][0] FIXME
+    i   = scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)
+    ii  = scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A)
+    iii = scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
+        
+    return max(i, ii , iii )
 
 file = 'BLOSUM62.txt'
 scores = {};
 with open(file, 'r') as f: 
     letters = [] 
     for line in f:
-        
         if line.startswith("#"):
             continue;
         if line.startswith(" "):
@@ -56,11 +54,10 @@ with open(file, 'r') as f:
             letter = tokens[0]
             theScores = line.split()[1:]
             for i in range(len(letters)):
-                scores[letter][letters[i]] = theScores[i]
+                scores[letter][letters[i]] = int(theScores[i])
             
 start = timeit.default_timer()
 
-#Open the file and load contents into memory
 file = 'Toy_FASTAs.in'
 Entities = []
 with open(file, 'r') as f:
