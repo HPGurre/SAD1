@@ -14,12 +14,11 @@ def Alignment(X, Y):
         delta = -4; # take this from the file.
         
         #initialise
-        A = [[None for y in range(len(Y))] for x in range(len(X))] #A[row(x)][column(y)]
+        A = [[None for y in range(len(Y)+1)] for x in range(len(X)+1)] #A[row(x)][column(y)]
         
-        for i in range(len(X)):
-            A[i][0] = i*delta 
-        
-        for j in range(len(Y)):
+        for i in range(len(X)+1):
+            A[i][0] = i*delta
+        for j in range(len(Y)+1):
             A[0][j] = j*delta
         
         return AlignmentRec(X,Y,A)      
@@ -27,11 +26,12 @@ def Alignment(X, Y):
 def AlignmentRec(X, Y, A):
     #base
     if not X:
-        return len(Y)*-4
-#         return A[0][len(Y)-1] FIXME
+        return A[0][len(Y)]
+        #return len(Y)*-4
     if not Y:
-        return len(X)*-4
-        #return A[len(X)-1][0] FIXME
+        return A[len(X)][0]
+#         return len(X)*-4
+ 
     i   = scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)
     ii  = scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A)
     iii = scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
