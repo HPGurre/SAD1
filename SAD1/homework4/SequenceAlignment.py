@@ -21,7 +21,9 @@ def Alignment(X, Y):
         for j in range(len(Y)+1):
             A[0][j] = j*delta
         
-        return AlignmentRec(X,Y,A)      
+        cost = AlignmentRec(X,Y,A)  
+        
+        return (cost, '[TODO]AlignmentX', '[TODO]AlignmentY')    
     
 def AlignmentRec(X, Y, A):
     #base
@@ -86,9 +88,9 @@ with open(file, 'r') as f:
 
 for e1, e2 in itertools.combinations(Entities, 2):
     alignment = Alignment(e1.sequence, e2.sequence)
-    print('{0}---{1}: {2}'.format(e1.name, e2.name, alignment))
-    print('{0}'.format("("+e1.name+') Alignment [TODO]'))
-    print('{0}'.format("("+e2.name+') Alignment [TODO]'))
+    print('{0}---{1}: {2}'.format(e1.name, e2.name, alignment[0]))
+    print('{0}'.format(alignment[1]))
+    print('{0}'.format(alignment[2]))
     
 
 stop = timeit.default_timer()
