@@ -22,8 +22,9 @@ def Alignment(X, Y):
             A[0][j] = j*delta
         
         cost = AlignmentRec(X,Y,A)  
-        
-        return (cost, '[TODO]AlignmentX', '[TODO]AlignmentY')    
+        AlignmentX = '[TODO]AlignmentX'
+        AlignmentY = '[TODO]AlignmentY'
+        return (cost, AlignmentX, AlignmentY)    
     
 def AlignmentRec(X, Y, A):
     #base
