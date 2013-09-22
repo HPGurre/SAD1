@@ -26,17 +26,37 @@ def Alignment(X, Y):
 def AlignmentRec(X, Y, A):
     #base
     if not X:
-        return A[0][len(Y)]
-        #return len(Y)*-4
+        return A[0][len(Y)] #assumes all deltas are equal
     if not Y:
-        return A[len(X)][0]
-#         return len(X)*-4
- 
-    i   = scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)
-    ii  = scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A)
-    iii = scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
+        return A[len(X)][0] #assumes all deltas are equal
+
+#     if A[len(X)][len(Y)] == None:
+#         i = scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)  
+#         A[len(X)][len(Y)] = i
+#     else:
+#         i = A[len(X)][len(Y)]
+#     
+#     if A[len(X)][len(Y)-1] == None:
+#         ii = scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A)  
+#         A[len(X)][len(Y)-1] = ii
+#     else:
+#         ii = A[len(X)][len(Y)-1] 
+#         
+#     if A[len(X)-1][len(Y)] == None:
+#         iii = scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
+#         A[len(X)-1][len(Y)] = iii
+#     else:
+#         iii = A[len(X)-1][len(Y)]
         
-    return max(i, ii , iii )
+    i =  A[len(X)][len(Y)] if A[len(X)][len(Y)] != None else scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)  
+    ii =  A[len(X)][len(Y)-1] if A[len(X)][len(Y)-1] != None else scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A) 
+    iii =  A[len(X)-1][len(Y)] if A[len(X)-1][len(Y)] != None else scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
+    
+    A[len(X)][len(Y)] = i 
+    A[len(X)][len(Y)-1] =  ii 
+    A[len(X)-1][len(Y)] = iii    
+    
+    return max(i, ii , iii)
 
 file = 'BLOSUM62.txt'
 scores = {};
