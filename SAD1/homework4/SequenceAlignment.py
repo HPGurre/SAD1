@@ -1,4 +1,3 @@
-import re
 import itertools
 import timeit
 
@@ -20,46 +19,50 @@ def Alignment(X, Y):
             A[i][0] = i*delta
         for j in range(len(Y)+1):
             A[0][j] = j*delta
-        
-        cost = AlignmentRec(X,Y,A)  
-        AlignmentX = '[TODO]AlignmentX'
-        AlignmentY = '[TODO]AlignmentY'
-        return (cost, AlignmentX, AlignmentY)    
-    
-def AlignmentRec(X, Y, A):
-    #base
-    if not X:
-        return A[0][len(Y)] #assumes all deltas are equal
-    if not Y:
-        return A[len(X)][0] #assumes all deltas are equal
 
-#     if A[len(X)][len(Y)] == None:
-#         i = scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)  
-#         A[len(X)][len(Y)] = i
-#     else:
-#         i = A[len(X)][len(Y)]
-#     
-#     if A[len(X)][len(Y)-1] == None:
-#         ii = scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A)  
-#         A[len(X)][len(Y)-1] = ii
-#     else:
-#         ii = A[len(X)][len(Y)-1] 
-#         
-#     if A[len(X)-1][len(Y)] == None:
-#         iii = scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
-#         A[len(X)-1][len(Y)] = iii
-#     else:
-#         iii = A[len(X)-1][len(Y)]
-        
-    i =  A[len(X)][len(Y)] if A[len(X)][len(Y)] != None else scores[X[0]][Y[0]]+ AlignmentRec(X[1:], Y[1:], A)  
-    ii =  A[len(X)][len(Y)-1] if A[len(X)][len(Y)-1] != None else scores['*'][Y[0]] + AlignmentRec(X,Y[1:], A) 
-    iii =  A[len(X)-1][len(Y)] if A[len(X)-1][len(Y)] != None else scores[X[0]]['*'] + AlignmentRec(X[1:], Y, A)
+        AL = '' 
+        return  AlignmentRec(X,Y,A,AL)  
     
-    A[len(X)][len(Y)] = i 
-    A[len(X)][len(Y)-1] =  ii 
-    A[len(X)-1][len(Y)] = iii    
+def AlignmentRec(X, Y, A, AL):
+    #Base
+    if not X:
+        return (A[0][len(Y)], '') #assumes all deltas are equal
+    if not Y:
+        return (A[len(X)][0], '') #assumes all deltas are equal
+
+    #Recursion
+    if A[len(X)][len(Y)] == None:
+        rec = AlignmentRec(X[1:], Y[1:], A, AL)
+        i = rec[0]+ scores[X[0]][Y[0]]
+        A[len(X)][len(Y)] = rec[0] 
+        AL = rec[1]
+    else:
+        i = A[len(X)][len(Y)]
+     
+    if A[len(X)][len(Y)-1] == None:
+        rec = AlignmentRec(X,Y[1:], A, AL)
+        ii =  rec[0]+scores['*'][Y[0]]
+        A[len(X)][len(Y)-1] = ii
+        AL = rec[1]
+    else:
+        ii = A[len(X)][len(Y)-1] 
+         
+    if A[len(X)-1][len(Y)] == None:
+        rec = AlignmentRec(X[1:], Y, A, AL)
+        iii = rec[0]+scores[X[0]]['*']
+        A[len(X)-1][len(Y)] = iii
+        AL = rec[1]
+    else:
+        iii = A[len(X)-1][len(Y)]
     
-    return max(i, ii , iii)
+    
+    if max(i, ii, iii) == i:
+        AL += X[0]
+    elif max(ii, iii) == ii:
+        AL += '_'
+    else:
+        AL += '_' 
+    return max(i,ii,iii), AL
 
 file = 'BLOSUM62.txt'
 scores = {};
@@ -90,10 +93,9 @@ with open(file, 'r') as f:
 for e1, e2 in itertools.combinations(Entities, 2):
     alignment = Alignment(e1.sequence, e2.sequence)
     print('{0}---{1}: {2}'.format(e1.name, e2.name, alignment[0]))
+    print('{0}'.format(e1.sequence))
     print('{0}'.format(alignment[1]))
-    print('{0}'.format(alignment[2]))
     
-
 stop = timeit.default_timer()
 total = stop-start
 print("Runtime(total): " + str(total))
