@@ -1,79 +1,57 @@
 import timeit
-from collections import deque
+from homework5.Graph import Graph, Vertex
+from homework5.BreadthFirstSearch import BreadthFirst
 
-class Vertex:
-    def __init__ (self, name):
-        self.name = name
+def augment(maxFlow, P):
+    bottleneck = min(P, key= lambda x :x.capacity-x.flow).capacity
+    for arc in P:
+        #verify the that these are correct
+        if arc.isForward:
+            arc.flow += bottleneck
+            #arc.reverseEdge.flow += bottleneck
+        elif not arc.isForward:  
+            arc.flow -= bottleneck
+           # arc.reverseEdge.flow -= bottleneck
 
-    def __str__(self):
-        return "Vertex(%s)"%(self.name) 
-    
-class Arc:
-    def __init__(self, fromVertex, toVertex, capacity, isForward=True): 
-        self.fromVertex = fromVertex
-        self.toVertex = toVertex
-        self.capacity = capacity
-        self.isForward = isForward  
-        
-    def __str__(self):
-        direction = 'forward' if self.isForward else 'backward'
-        return "Arc(%s > %s) [%s][%s]"%(self.fromVertex, self.toVertex, self.capacity,direction ) 
-    
-    
-def augment(f, P):
-    b = max(P, key= lambda x :x.capacity) #fixme insert correct key
-#     for arc in P:
-#         if arc.isForward:
-#             pass # increase f(e) in G by b
-#         else:
-#             pass
-    
-    return f
+    return maxFlow + bottleneck
     
 def maxflow():
-    pass
-
-
-def bfs(G, s):  
-    queue = deque([s])
-    
-    while len(queue) == 0 :
-        queue.popleft()
-    
-    
+    maxFlow = 0
+    bfs = BreadthFirst(G, G.source)
+    while bfs.hasPathTo(G.sink):
+        P = bfs.pathTo(G.sink)
+        maxFlow =  augment(maxFlow, P)
+        bfs = BreadthFirst(G , G.source)
+        
+        #remove these print out when done...
+        print("maxflow is currently: {0}".format(maxFlow))
+        for e in G.arcs:
+            print(e)
+            
+    return maxFlow
+            
 start = timeit.default_timer()
 
-file = 'rail.txt'
-vertices = []
-arcs = []
-with open(file, 'r') as f:
-    for line in f:
+G = Graph();
+with open('rail.txt', 'r') as f:
+    for line in f:    
         if line.startswith('55'): #Quick fix
-            n = int(line[:-1])
-            for vertex in range(n):
+            for vertex in range(int(line[:-1])):
                 line = f.__next__()
-                vertices.append(Vertex(line[:-1]))     
-                                
+                G.addVertex(Vertex(line[:-1]))
+                                 
         if line.startswith('119'): #Quick fix
             m = int(line[:-1])
-            for arc in range(m):
+            for arc in range(int(line[:-1])):
                 line = f.__next__()
                 tokens = line.split() 
-                a = tokens[0]
-                b =  tokens[1]
-                c = int(tokens[2])
-                arcs.append(Arc(a, b, c))
+                a = int(tokens[0])
+                b =  int(tokens[1])
+                c = int(tokens[2]) if int(tokens[2]) > 0 else float('inf') 
+                G.addArc(a, b, c)
+       
+print('MaxFlow: {0}'.format(maxflow()))
 
-for v in vertices:
-    print(v)
-for a in arcs:
-    print(a)
-P = []
-P.append(Arc("a", "b", 10))
-P.append(Arc("a", "b", 1))
-P.append(Arc("a", "b", 2))
-
-augment("s", P)
 stop = timeit.default_timer()
 total = stop-start
 print("Runtime(total): " + str(total))
