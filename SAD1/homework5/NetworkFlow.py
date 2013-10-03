@@ -3,18 +3,16 @@ from homework5.Graph import Graph, Vertex
 from homework5.BreadthFirstSearch import BreadthFirst
 
 def augment(maxFlow, P):
-    bottleneck = min(P, key= lambda x :x.capacity-x.flow).capacity
+    bottleneck = min(P, key= lambda x :x.capacity-x.flow)
+    b = int(bottleneck.capacity - bottleneck.flow) 
     for arc in P:
-        #verify the that these are correct
         if arc.isForward:
-            arc.flow += bottleneck
-            #arc.reverseEdge.flow += bottleneck
+            arc.flow += b
         elif not arc.isForward:  
-            arc.flow -= bottleneck
-           # arc.reverseEdge.flow -= bottleneck
+            arc.flow -= b
+    return maxFlow +b
 
-    return maxFlow + bottleneck
-    
+#runtime: n*m
 def maxflow():
     maxFlow = 0
     bfs = BreadthFirst(G, G.source)
@@ -22,16 +20,13 @@ def maxflow():
         P = bfs.pathTo(G.sink)
         maxFlow =  augment(maxFlow, P)
         bfs = BreadthFirst(G , G.source)
-        
-        #remove these print out when done...
-        print("maxflow is currently: {0}".format(maxFlow))
-        for e in G.arcs:
-            print(e)
-            
     return maxFlow
-            
-start = timeit.default_timer()
 
+def cut():
+    bfs = BreadthFirst(G, G.source)
+    return filter(lambda x: x.isForward and bfs.marked[x.fromVertex] and not bfs.marked[x.toVertex], G.arcs)
+
+start = timeit.default_timer()
 G = Graph();
 with open('rail.txt', 'r') as f:
     for line in f:    
@@ -50,9 +45,12 @@ with open('rail.txt', 'r') as f:
                 c = int(tokens[2]) if int(tokens[2]) > 0 else float('inf') 
                 G.addArc(a, b, c)
        
-print('MaxFlow: {0}'.format(maxflow()))
+print('Maximum flow: {0}'.format(maxflow()))
+print('Cut:')
+for edge in cut():
+    print('\t{0}'.format(edge))
 
 stop = timeit.default_timer()
 total = stop-start
-print("Runtime(total): " + str(total))
+print("\nRuntime(total): " + str(total))
 

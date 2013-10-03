@@ -12,7 +12,7 @@ class BreadthFirst:
         while self.queue:
             v = self.queue.popleft()
             for w in G.adj[v]:
-                if not self.marked[w.toVertex] and (w.capacity - w.flow - w.reverseEdge.flow) > 0:
+                if not self.marked[w.toVertex] and (w.capacity - w.flow) > 0:
                     self.edgeTo[w.toVertex] = w
                     self.marked[w.toVertex] = True
                     self.queue.append(w.toVertex);   

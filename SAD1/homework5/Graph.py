@@ -1,5 +1,3 @@
-import uuid
-import random
 class Vertex:
     def __init__ (self, name):
         self.name = name
@@ -17,7 +15,7 @@ class Arc:
         
     def __str__(self):
         direction = 'forward' if self.isForward else 'backward'
-        return "Arc(%s > %s) [%s/%s][%s]"%(self.fromVertex, self.toVertex, self.flow, self.capacity, direction ) 
+        return "%s > %s [%s/%s](%s)"%(self.fromVertex, self.toVertex, self.flow, self.capacity, direction ) 
 
 class Graph:
     def __init__(self): 
@@ -40,13 +38,9 @@ class Graph:
         fromVertex = self.vertices[a]
         toVertex = self.vertices[b]
         edge = Arc(fromVertex,toVertex, c) 
-        edge.isForward = True  
-        reverseEdge = Arc(toVertex,fromVertex, c)
+        reverseEdge = Arc(toVertex,fromVertex, c, False)
         reverseEdge.isForward = False 
-        edge.reverseEdge = reverseEdge 
-        reverseEdge.reverseEdge = edge   
         self.adj[fromVertex].append(edge)
         self.adj[toVertex].append(reverseEdge)
-        
         self.arcs.append(edge)
         self.arcs.append(reverseEdge)
